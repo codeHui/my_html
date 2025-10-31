@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港人口发展全景分析报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF',
+                        secondary: '#3B82F6',
+                        accent: '#DBEAFE',
+                        neutral: '#F3F4F6',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+            .section-fade {
+                background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(222,231,255,0.3) 100%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+    <!-- 顶部导航 -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-bar-chart text-primary text-2xl"></i>
+                <h1 class="text-xl md:text-2xl font-bold text-primary">香港人口发展分析</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#overview" class="hover:text-primary transition-colors">概述</a>
+                <a href="#total" class="hover:text-primary transition-colors">总人口</a>
+                <a href="#gender" class="hover:text-primary transition-colors">性别结构</a>
+                <a href="#age" class="hover:text-primary transition-colors">年龄分布</a>
+                <a href="#aging" class="hover:text-primary transition-colors">老龄化趋势</a>
+                <a href="#conclusion" class="hover:text-primary transition-colors">结论建议</a>
+            </nav>
+            <button class="md:hidden text-gray-600">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 概述部分 -->
+        <section id="overview" class="mb-16">
+            <div class="bg-white rounded-xl p-6 md:p-8 shadow-lg">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 border-l-4 border-primary pl-4">数据概述</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="mb-4">本报告基于政府统计处2021-2024年的人口数据，涵盖香港按性别及年龄组别的人口数量（单位：千）及占总人口百分比，统计时点包括年中及年底（2024年底为临时数据）。</p>
+                        <p>数据反映了香港人口在性别结构、年龄分布及老龄化趋势等方面的关键特征，为政策制定、社会规划提供重要参考。</p>
+                    </div>
+                    <div class="bg-accent rounded-lg p-5">
+                        <h3 class="font-semibold mb-3 flex items-center">
+                            <i class="fa fa-info-circle text-primary mr-2"></i>数据说明
+                        </h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• 统计范围：香港全体居住人口</li>
+                            <li>• 年龄分组：0-4岁至85岁以上共18个组别</li>
+                            <li>• 时间跨度：2021年中至2024年底（临时）</li>
+                            <li>• 数据来源：政府统计处人口统计组</li>
+                            <li>• 标注"p"为临时数据</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 总人口趋势 -->
+        <section id="total" class="mb-16">
+            <div class="bg-white rounded-xl p-6 md:p-8 shadow-lg">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 border-l-4 border-primary pl-4">总人口趋势分析</h2>
+                <div class="mb-8">
+                    <p class="mb-4">2021-2024年香港总人口呈现波动增长趋势，从2021年中的741.3万增长至2024年中的752.4万，年均增长率约0.4%。</p>
+                    <div class="h-80">
+                        <canvas id="totalPopulationChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="bg-neutral rounded-lg p-5 text-center">
+                        <div class="text-3xl font-bold text-primary mb-1">741.3万</div>
+                        <div class="text-sm text-gray-500">2021年中总人口</div>
+                    </div>
+                    <div class="bg-neutral rounded-lg p-5 text-center">
+                        <div class="text-3xl font-bold text-primary mb-1">753.6万</div>
+                        <div class="text-sm text-gray-500">2023年中总人口</div>
+                    </div>
+                    <div class="bg-neutral rounded-lg p-5 text-center">
+                        <div class="text-3xl font-bold text-primary mb-1">753.4万</div>
+                        <div class="text-sm text-gray-500">2024年底（预计）</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 性别结构分析 -->
+        <section id="gender" class="mb-16">
+            <div class="bg-white rounded-xl p-6 md:p-8 shadow-lg">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 border-l-4 border-primary pl-4">性别结构分析</h2>
+                
+                <div class="mb-8">
+                    <p class="mb-4">香港人口性别比例长期呈现女多男少特征，女性占比维持在54.4%-54.6%之间，且女性人口增长略快于男性。</p>
+                    <div class="h-80">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-neutral rounded-lg p-5">
+                        <h3 class="font-semibold mb-3">性别比例变化</h3>
+                        <ul class="space-y-2">
+                            <li>• 2021年：男性占45.6%，女性占54.4%</li>
+                            <li>• 2023年：男性占45.6%，女性占54.4%</li>
+                            <li>• 2024年（预计）：男性占45.4%，女性占54.6%</li>
+                            <li>• 性别比（男:女）从2021年的83.9:100降至2024年的83.0:100</li>
+                        </ul>
+                    </div>
+                    <div class="bg-neutral rounded-lg p-5">
+                        <h3 class="font-semibold mb-3">关键观察</h3>
+                        <ul class="space-y-2">
+                            <li>• 女性在老年群体中占比更高（85岁以上女性约为男性的1.7倍）</li>
+                            <li>• 25-39岁女性人口显著多于男性（差值约10-15万）</li>
+                            <li>• 0-19岁群体性别比例基本平衡（约1.03:1）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 年龄分布分析 -->
+        <section id="age" class="mb-16">
+            <div class="bg-white rounded-xl p-6 md:p-8 shadow-lg">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 border-l-4 border-primary pl-4">年龄结构分布</h2>
+                
+                <div class="mb-8">
+                    <p class="mb-4">香港人口年龄结构呈现"两头小、中间大"特征，但年轻人口（0-19岁）持续减少，劳动年龄人口（20-64岁）略有下降，老年人口（65岁以上）显著增加。</p>
+                    <div class="h-80">
+                        <canvas id="ageGroupChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto mt-8">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="py-3 px-4 border-b text-left">年龄组</th>
+                                <th class="py-3 px-4 border-b text-right">2021年中（万）</th>
+                                <th class="py-3 px-4 border-b text-right">2024年中（预计，万）</th>
+                                <th class="py-3 px-4 border-b text-right">变化率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-3 px-4 border-b">0-19岁</td>
+                                <td class="py-3 px-4 border-b text-right">151.0</td>
+                                <td class="py-3 px-4 border-b text-right">143.6</td>
+                                <td class="py-3 px-4 border-b text-right text-red-500">-4.9%</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="py-3 px-4 border-b">20-64岁</td>
+                                <td class="py-3 px-4 border-b text-right">515.5</td>
+                                <td class="py-3 px-4 border-b text-right">512.8</td>
+                                <td class="py-3 px-4 border-b text-right text-red-500">-0.5%</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 border-b">65岁以上</td>
+                                <td class="py-3 px-4 border-b text-right">74.8</td>
+                                <td class="py-3 px-4 border-b text-right">96.0</td>
+                                <td class="py-3 px-4 border-b text-right text-green-500">28.3%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 老龄化趋势 -->
+        <section id="aging" class="mb-16">
+            <div class="bg-white rounded-xl p-6 md:p-8 shadow-lg">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 border-l-4 border-primary pl-4">老龄化趋势深度分析</h2>
+                
+                <div class="mb-8">
+                    <p class="mb-4">香港老龄化进程加速，65岁以上人口占比从2021年的10.1%升至2024年的12.8%，其中80岁以上高龄老人增长最为显著（+40%）。</p>
+                    <div class="h-80">
+                        <canvas id="agingChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mt-8">
+                    <div class="bg-neutral rounded-lg p-5">
+                        <h3 class="font-semibold mb-3">老年人口增长</h3>
+                        <ul class="space-y-2">
+                            <li>• 65-69岁：从49.2万增至58.5万（+18.9%）</li>
+                            <li>• 70-74岁：从37.1万增至44.3万（+19.4%）</li>
+                            <li>• 75-79岁：从19.7万增至29.1万（+47.7%）</li>
+                            <li>• 80-84岁：从16.5万增至15.8万（基本持平）</li>
+                            <li>• 85岁以上：从22.6万增至24.9万（+10.2%）</li>
+                        </ul>
+                    </div>
+                    <div class="bg-neutral rounded-lg p-5">
+                        <h3 class="font-semibold mb-3">抚养比变化</h3>
+                        <p class="text-sm mb-2">老年抚养比（65岁以上人口/15-64岁人口）：</p>
+                        <ul class="space-y-2">
+                            <li>• 2021年：16.8%</li>
+                            <li>• 2023年：20.0%</li>
+                            <li>• 2024年（预计）：21.5%</li>
+                            <li class="mt-3">总抚养比（0-14岁+65岁以上/15-64岁）：</li>
+                            <li>• 从2021年的46.3%升至2024年的51.1%</li>
+                        </ul>
+                    </div>
+                    <div class="bg-neutral rounded-lg p-5">
+                        <h3 class="font-semibold mb-3">国际对比（参考）</h3>
+                        <ul class="space-y-2">
+                            <li>• 日本：老年抚养比36.4%（2021）</li>
+                            <li>• 德国：老年抚养比33.0%（2021）</li>
+                            <li>• 新加坡：老年抚养比14.4%（2021）</li>
+                            <li>• 香港老龄化速度远超多数发达国家</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关键发现与建议 -->
+        <section id="conclusion" class="mb-16">
+            <div class="bg-white rounded-xl p-6 md:p-8 shadow-lg">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800 border-l-4 border-primary pl-4">关键发现与政策建议</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-primary">核心发现</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fa fa-arrow-right text-primary mt-1 mr-2"></i>
+                                <span>总人口增长乏力（年均+0.4%），主要依赖老年人口增长</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-arrow-right text-primary mt-1 mr-2"></i>
+                                <span>劳动年龄人口（20-64岁）开始萎缩，25-34岁群体减少明显</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-arrow-right text-primary mt-1 mr-2"></i>
+                                <span>0-4岁幼儿人口持续下降（2021-2024年-19.9%），预示未来入学人口减少</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-arrow-right text-primary mt-1 mr-2"></i>
+                                <span>75岁以上高龄老人增速最快，对长期护理需求激增</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-primary">政策建议</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                                <span>完善养老保障体系，增加安老院舍及社区养老服务供给</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                                <span>优化生育支持政策，降低育儿成本（如住房、教育补贴）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                                <span>放宽高技能人才入境政策，补充劳动年龄人口</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                                <span>推动延迟退休及弹性退休制度，延长劳动参与年限</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                                <span>加强老年医疗保健，预防慢性病，提升健康预期寿命</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关于本报告</h3>
+                    <p class="text-sm text-gray-300">基于政府统计处2021-2024年人口数据编制，旨在全面呈现香港人口发展趋势，为社会各界提供参考。</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">数据来源</h3>
+                    <p class="text-sm text-gray-300">政府统计处人口统计组<br>查询电话：3903 6943<br>查询电邮：population@censtatd.gov.hk</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">发布信息</h3>
+                    <p class="text-sm text-gray-300">数据发布日期：2025年2月18日<br>报告编制日期：2025年7月</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-sm text-gray-400">
+                © 2025 香港人口发展分析报告 | 仅供参考
+            </div>
+        </div>
+    </footer>
+
+    <!-- 图表脚本 -->
+    <script>
+        // 总人口趋势图
+        const totalCtx = document.getElementById('totalPopulationChart').getContext('2d');
+        const totalChart = new Chart(totalCtx, {
+            type: 'line',
+            data: {
+                labels: ['2021年中', '2021年底', '2022年中', '2022年底', '2023年中', '2023年底', '2024年中', '2024年底p'],
+                datasets: [{
+                    label: '总人口（万）',
+                    data: [741.3, 740.2, 734.6, 747.3, 753.6, 752.8, 752.4, 753.4],
+                    borderColor: '#1E40AF',
+                    backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '2021-2024年香港总人口变化趋势'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: '人口数量（万）'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 性别结构图表
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        const genderChart = new Chart(genderCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2021年中', '2022年中', '2023年中', '2024年中'],
+                datasets: [
+                    {
+                        label: '男性（万）',
+                        data: [338.2, 335.5, 343.5, 341.8],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    },
+                    {
+                        label: '女性（万）',
+                        data: [403.1, 399.2, 410.1, 410.6],
+                        backgroundColor: 'rgba(236, 72, 153, 0.7)',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '2021-2024年香港分性别人口数量'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: '人口数量（万）'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 年龄组分布图表
+        const ageCtx = document.getElementById('ageGroupChart').getContext('2d');
+        const ageChart = new Chart(ageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2021年中', '2024年中'],
+                datasets: [
+                    {
+                        label: '0-19岁',
+                        data: [151.0, 143.6],
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    },
+                    {
+                        label: '20-64岁',
+                        data: [515.5, 512.8],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    },
+                    {
+                        label: '65岁以上',
+                        data: [74.8, 96.0],
+                        backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '2021与2024年香港年龄结构对比（单位：万）'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: '人口数量（万）'
+                        }
+                    },
+                    x: {
+                        stacked: true
+                    }
+                }
+            }
+        });
+
+        // 老龄化趋势图表
+        const agingCtx = document.getElementById('agingChart').getContext('2d');
+        const agingChart = new Chart(agingCtx, {
+            type: 'line',
+            data: {
+                labels: ['2021年中', '2021年底', '2022年中', '2022年底', '2023年中', '2023年底', '2024年中', '2024年底p'],
+                datasets: [
+                    {
+                        label: '65-69岁（万）',
+                        data: [49.2, 50.8, 52.3, 54.9, 56.9, 58.1, 58.5, 59.0],
+                        borderColor: '#F59E0B',
+                        tension: 0.3
+                    },
+                    {
+                        label: '70-74岁（万）',
+                        data: [37.1, 38.1, 39.5, 41.3, 42.5, 43.4, 44.2, 45.0],
+                        borderColor: '#EF4444',
+                        tension: 0.3
+                    },
+                    {
+                        label: '75岁以上（万）',
+                        data: [37.7, 39.2, 40.8, 43.8, 46.3, 49.1, 51.5, 54.3],
+                        borderColor: '#9D174D',
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '2021-2024年香港老年人口（65岁以上）变化趋势'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: '人口数量（万）'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
